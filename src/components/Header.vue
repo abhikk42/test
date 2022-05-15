@@ -251,6 +251,7 @@ export default {
 @media (max-width: 768px) {
   .headContainer {
     max-width: 100vw;
+    overflow: hidden;
   }
   .mobilemenuhead {
     background: #501337;

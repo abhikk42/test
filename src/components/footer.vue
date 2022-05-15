@@ -183,6 +183,9 @@ export default {
 
   width: 100%;
 }
+.footerContainer {
+  overflow: hidden;
+}
 .footerHeader {
   display: flex;
   align-items: center;

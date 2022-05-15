@@ -1,39 +1,53 @@
 <template>
   <div class="aboutContainer" ref="details">
-    <section>
+    <section class="head">
       <Header ref="header" />
     </section>
 
     <section class="detailcontainer">
       <div class="topdetail">
         <div class="topcol1">
-          <VueSlickCarousel v-bind="topsettings" @afterChange="afterPageChange" ref="gallerycarousel">
-            
-
-          <div  v-for="val in gallery" :key="val.image" class="carouselimg">
-              <img :src="val.image" width="100%" height="100%"/>
+          <VueSlickCarousel
+            v-bind="topsettings"
+            @afterChange="afterPageChange"
+            ref="gallerycarousel"
+          >
+            <div v-for="val in gallery" :key="val.image" class="carouselimg">
+              <img :src="val.image" width="100%" height="100%" />
             </div>
-           
-     
-    </VueSlickCarousel>
+          </VueSlickCarousel>
         </div>
         <div class="topcol2">
-        <div  v-for="(val,ind) in gallery" :key="ind" class="imgcont" @click="changeSlide(ind)">
-              <img :src="val.image" class="topimg" width="100%" height="100%" />
-            </div>
+          <div
+            v-for="(val, ind) in gallery"
+            :key="ind"
+            class="imgcont"
+            @click="changeSlide(ind)"
+          >
+            <img :src="val.image" class="topimg" width="100%" height="100%" />
+          </div>
         </div>
 
         <div class="topcol textcont">
-          <h4>{{ data ? data.name : "" }}</h4>
-          <h6>Rs.{{ data.selling_price }}</h6>
+          <h4 class="head">{{ data ? data.name : "" }}</h4>
+          <h6 class="price">Rs.{{ data.selling_price }}</h6>
+          <div class="mobprice">
+            <h6>Rs.{{ data.selling_price }}</h6>
+            <button class="btncart">ADD TO CART</button>
+          </div>
           <div class="sizecont">
             <h6>select size</h6>
             <div v-for="val in size" :key="val" class="sizebox">{{ val }}</div>
           </div>
           <div class="colorcont">
             <h6>COLOURS</h6>
-            <div v-for="(val,ind) in data.bestseller_products" :key="val.color" :class="activecolor==ind?'dots dotsactive':'dots'" :style="{background:val.color}" @click="handleActiveColor(ind)"></div>
-          
+            <div
+              v-for="(val, ind) in data.bestseller_products"
+              :key="val.color"
+              :class="activecolor == ind ? 'dots dotsactive' : 'dots'"
+              :style="{ background: val.color }"
+              @click="handleActiveColor(ind)"
+            ></div>
           </div>
           <div class="cartcont">
             <button class="btncart">ADD TO CART</button>
@@ -68,7 +82,7 @@
                   />
                 </span>
               </button>
-              <div v-if="accorddata[1].open == 'true'"  class="filtercontent" >
+              <div v-if="accorddata[1].open == 'true'" class="filtercontent">
                 Lorem ipsum dolor sit amet consectetur adipisicing elit. Eos,
                 fugit praesentium sequi cumque fugiat perferendis, maxime
                 officia modi itaque unde quae enim pariatur voluptatem odio!
@@ -85,7 +99,7 @@
                   />
                 </span>
               </button>
-              <div v-if="accorddata[2].open == 'true'"  class="filtercontent">
+              <div v-if="accorddata[2].open == 'true'" class="filtercontent">
                 <ul>
                   <li v-for="val in data.visible_attributes" :key="val.code">
                     <h4>{{ val.code }}</h4>
@@ -100,8 +114,8 @@
           <div class="pincodecont">
             <h6>CHECK PINCODE FOR DELIVERY</h6>
             <div class="pinrow">
-            <input type="text" placeholder="Enter pincode" class="pininput" />
-            <button class="pinbtn">check</button>
+              <input type="text" placeholder="Enter pincode" class="pininput" />
+              <button class="pinbtn">check</button>
             </div>
           </div>
         </div>
@@ -126,26 +140,18 @@
 
       <div class="bottomcarousel">
         <h4>BEING HUMAN EXCLUSIVE</h4>
-      
+
         <VueSlickCarousel
           v-bind="settings"
           class="vueslick"
           v-if="data.similar_products.length > 0"
         >
-          <div
-            class="slide"
-           
-            v-for="val in data.similar_products"
-            :key="val"
-          >
+          <div class="slide" v-for="val in data.similar_products" :key="val">
             <img :src="val.image" />
-            <h6 class="trend">
-              /IN TREND/
-            </h6>
-            <h6 class="slidedet name">{{val.name}}</h6>
-            <h6 class="slidedet price">Rs.{{val.selling_price}}</h6>
+            <h6 class="trend">/ IN TREND /</h6>
+            <h6 class="slidedet name">{{ val.name }}</h6>
+            <h6 class="slidedet price">Rs.{{ val.selling_price }}</h6>
           </div>
-        
         </VueSlickCarousel>
       </div>
     </section>
@@ -164,10 +170,9 @@ import axios from "axios";
 import Footer from "../components/footer.vue";
 // import Footer from "../components/footer.vue";
 
-
 import Header from "../components/Header.vue";
 export default {
-  components: { VueSlickCarousel, Header,Footer },
+  components: { VueSlickCarousel, Header, Footer },
   name: "detailpage",
 
   data() {
@@ -177,8 +182,8 @@ export default {
       store: "1",
       gallery: [],
       url_key: "",
-      activecolor:0,
-              sliderPageIndex: 0,
+      activecolor: 0,
+      sliderPageIndex: 0,
 
       accorddata: [{ open: "false" }, { open: "false" }, { open: "false" }],
       data: "",
@@ -186,23 +191,23 @@ export default {
       settings: {
         dots: false,
         focusOnSelect: true,
-                 arrows:true,
+        arrows: true,
 
         infinite: true,
         autoplay: true,
-      
+
         autoplaySpeed: 2000,
         vertical: false,
         slidesToShow: 3,
         slidesToScroll: 1,
       },
-       topsettings: {
+      topsettings: {
         dots: true,
         focusOnSelect: true,
         infinite: true,
         autoplay: true,
         autoplaySpeed: 4000,
-        arrows:false,
+        arrows: false,
 
         vertical: true,
         slidesToShow: 1,
@@ -211,46 +216,39 @@ export default {
     };
   },
   computed: {
-  currentPage() {
-    // always display 1 if page index is 0
-    if (this.sliderPageIndex == 0) {
-      return 1;
-    } else {
-      // compensate for slidesToScroll settings and compensate the shift by 1
-      return this.sliderPageIndex / this.topsettings.slidesToScroll + 1;
-      
-
-
-    }
+    currentPage() {
+      // always display 1 if page index is 0
+      if (this.sliderPageIndex == 0) {
+        return 1;
+      } else {
+        // compensate for slidesToScroll settings and compensate the shift by 1
+        return this.sliderPageIndex / this.topsettings.slidesToScroll + 1;
+      }
+    },
   },
-},
 
   mounted() {
     let key = this.$route.query.url_key;
- 
-    if(window.innerWidth<768)
-    {
-      this.settings.slidesToShow=2;
+
+    if (window.innerWidth < 768) {
+      this.settings.slidesToShow = 2;
       // document.getElementsByClassName('slick-dots').style[1].display='none'
     }
     if (key) this.url_key = key;
     this.getdata();
-
   },
   methods: {
-  changeSlide(ind){
-    this.$refs.gallerycarousel.goTo(ind)
-    this.sliderPageIndex=ind;
-    
-  },
-  afterPageChange(page) {
-    let calc=(page/this.gallery.length-1)%100;
-    // document.getElementsByClassName('slick-dots').style[0].backgroundSize=`${calc} +%100`;
-    //     document.getElementsByClassName('slick-dots').style[0].attr=`aria-valuenow=${calc} );`;
+    changeSlide(ind) {
+      this.$refs.gallerycarousel.goTo(ind);
+      this.sliderPageIndex = ind;
+    },
+    afterPageChange(page) {
+      let calc = (page / this.gallery.length - 1) % 100;
+      // document.getElementsByClassName('slick-dots').style[0].backgroundSize=`${calc} +%100`;
+      //     document.getElementsByClassName('slick-dots').style[0].attr=`aria-valuenow=${calc} );`;
 
-
-    this.sliderPageIndex = page;
-  },
+      this.sliderPageIndex = page;
+    },
     async getdata() {
       let resp = await axios.get(this.api, {
         params: {
@@ -274,10 +272,9 @@ export default {
       this.accorddata[ind].open =
         this.accorddata[ind].open == "true" ? "false" : "true";
     },
-    handleActiveColor(ind)
-    {
-      this.activecolor=ind;
-    }
+    handleActiveColor(ind) {
+      this.activecolor = ind;
+    },
   },
 };
 </script>
@@ -297,7 +294,9 @@ export default {
 .topdetail {
   display: flex;
   height: 100%;
-  font-family: 'Montserrat';
+  overflow: hidden;
+
+  font-family: "Montserrat";
   padding: 48px 50px;
 }
 .topdetail > .topcol1 {
@@ -306,34 +305,35 @@ export default {
 
   height: 100%;
 }
-.topcol2{
-  width:10%;
+.topcol2 {
+  width: 10%;
   display: flex;
   flex-direction: column;
-
 }
-.topcol2 .imgcont{
+.topcol2 .imgcont {
   width: 73px;
   cursor: pointer;
-  margin:5px 10px;
-height: 97px;
+  margin: 5px 10px;
+  height: 97px;
 }
-.topcol2 > .imgcont> img{
+.topcol2 > .imgcont > img {
   height: 100%;
   width: 100%;
 }
-.imgcont img{
-  width:100%;
-  height: 100%;;
-  margin:5px 0px;
+.imgcont img {
+  width: 100%;
+  height: 100%;
+  margin: 5px 0px;
 }
 
 .textcont {
   flex-direction: column;
   justify-content: center !important;
-  margin:0px;
-  width:50%;
-  padding:0px 1%;
+  margin: 0px;
+  overflow: hidden;
+
+  width: 50%;
+  padding: 0px 1%;
 }
 .colorcont {
   color: #747474;
@@ -347,22 +347,20 @@ height: 97px;
   width: 100%;
   text-transform: uppercase;
 }
-.carouselimg{
+.carouselimg {
   height: 100%;
-  width:100%;
+  width: 100%;
 }
-.dots{
+.dots {
   height: 25px;
   width: 25px;
   border-radius: 50%;
-  cursor:pointer;
-  margin:0px 10px;
+  cursor: pointer;
+  margin: 0px 10px;
   display: inline-block;
-
 }
-.dotsactive{
-      box-shadow: 0 0 0 2px white,0 0 0 5px #707070 ;
-
+.dotsactive {
+  box-shadow: 0 0 0 2px white, 0 0 0 5px #707070;
 }
 
 .textcont h4 {
@@ -372,7 +370,7 @@ height: 97px;
 }
 .textcont h6 {
   font-size: 22px;
-  margin:10px auto;
+  margin: 10px auto;
   font-weight: 400;
 }
 img {
@@ -393,15 +391,14 @@ img {
 .sizecont > h6 {
   width: 100%;
 }
-.topimg{
+.topimg {
   height: 100%;
-  width:100%;
-  
+  width: 100%;
 }
 .cartcont {
   display: inline-flex;
   width: 100%;
-  padding-top:45px;
+  padding-top: 45px;
 
   align-items: center;
   justify-content: flex-start;
@@ -414,8 +411,7 @@ img {
   margin: 0px 10%;
 }
 .btncart {
-  width: 415px;
-  height: 63px;
+  padding: 22px 130px;
   font-family: "Montserrat";
   font-size: 17px;
   background: #231f20;
@@ -426,7 +422,7 @@ img {
   align-items: center;
   cursor: pointer;
   justify-content: center;
-  padding:20px 25px;
+  padding: 20px 25px;
   border: 1px solid #dfdfdf;
   align-items: center;
 }
@@ -436,8 +432,8 @@ img {
 }
 .accordion {
   background-color: white;
-  color:#231F20;
-  font-family: 'Montserrat';
+  color: #231f20;
+  font-family: "Montserrat";
   cursor: pointer;
   text-transform: uppercase;
   padding: 15px 10px 15px 10px;
@@ -450,11 +446,10 @@ img {
   font-size: 15px;
   transition: 0.4s;
 }
-.accordion>.icon{
+.accordion > .icon {
   float: right;
 }
-.topcol>.imgcont>
-.icon {
+.topcol > .imgcont > .icon {
   float: right;
   font-size: 15px;
 }
@@ -475,20 +470,20 @@ img {
   border-bottom: 1px solid #231f20;
 }
 /*--------pincode-----------*/
-.pincodecont{
+.pincodecont {
   display: inline-flex;
-  width:90%;
+  width: 90%;
   flex-wrap: wrap;
 }
-.pinrow{
+.pinrow {
   display: flex;
-  width:70%;
+  width: 70%;
 }
 .pincodecont h6 {
   font-size: 15px;
-  margin:10px 0px;
+  margin: 10px 0px;
   color: #747474;
-  font-family: 'Montserrat';
+  font-family: "Montserrat";
 }
 .pininput {
   width: 70%;
@@ -507,9 +502,8 @@ img {
   text-transform: uppercase;
   text-align: center;
 }
-.filtercontent{
+.filtercontent {
   width: 100% !important;
-  
 }
 li {
   list-style-type: none;
@@ -527,6 +521,8 @@ li > h4 {
   display: flex;
   justify-content: space-around;
   border-top: 1px solid #f3f3f3;
+  overflow: hidden;
+
   border-bottom: 1px solid #f3f3f3;
 
   padding: 10px 40px;
@@ -540,9 +536,9 @@ li > h4 {
   display: inline-flex;
   width: 10%;
   text-transform: capitalize;
-  height: 100px;flex-wrap: wrap;
-  margin:0px;
-
+  height: 100px;
+  flex-wrap: wrap;
+  margin: 0px;
 
   justify-content: center;
   align-items: center;
@@ -557,15 +553,16 @@ li > h4 {
 
 /* Bottom container */
 .bottomcarousel {
+  overflow: hidden;
+
   height: 80%;
   display: flex;
-  gap:27px;
+  gap: 27px;
 
   justify-content: center;
 
   flex-wrap: wrap;
-  margin:0px 0px;
-  
+  margin: 0px 0px;
 
   padding: 80px 100px;
 }
@@ -578,17 +575,17 @@ li > h4 {
 }
 .slide {
   display: flex;
-align-items: center;
-padding:0px 10%;
-justify-content: center !important;
+  align-items: center;
+  padding: 0px 10%;
+  justify-content: center !important;
 
- width:100%;
+  width: 100%;
   height: 100%;
 }
-.slide img{
-  width:100%;
+.slide img {
+  width: 100%;
 
-  height:100%;
+  height: 100%;
 }
 
 .vueslick {
@@ -600,82 +597,136 @@ justify-content: center !important;
 .slider {
   width: 100%;
 }
-.slidedet{
+.slidedet {
   font-size: 16px;
-  font-family:'Monsterrat';
- 
+  font-family: "Monsterrat";
+
   font-weight: 400;
-  margin:0px;
+  margin: 0px;
 
-  color:#000000;
+  color: #202020;
 }
-.slidedet .name{
- padding-top:17px;
+.name {
+  padding-bottom: 5px;
+}
 
+.slidedet .price {
+  font-size: 17px;
 }
+.trend {
+  color: #747474;
+  width: 90%;
+  margin-bottom: 10px;
+  font-size: 13px;
+  font-weight: 400;
 
-.slidedet .price{
-font-size: 17px;
-}
-.trend{
-  color:#747474;
-  width:90%;
-  padding:17px  2px;
- 
+  padding: 17px 2px;
+
   border-bottom: 1px solid #747474;
-  
 }
 /* button.slick-prev:before, button.slick-next:before {
       background-color: red !important;
 } */
-.bottomcarousel>h4{
-  padding:50px 0px;
-}
-@media(max-width:768px)
-{
-  .detailContainer{
-    padding:0px;
-    margin: 0px;
-    width:100%;
-  }
- .topdetail{
-   flex-direction: column;
-   width: 100%;
-  padding:0px 60px;
-
- }
-.topdetail > .topcol1{
-  width:100%;
-  height: 100%;
-}
-
-.topcol2{
+.mobprice {
   display: none;
 }
-.accordiancont{
-  padding:auto 0px;
-  width:100%;
+.bottomcarousel > h4 {
+  padding: 50px 0px;
 }
-.accordion{
-  width:100%;
+@media (min-width: 769px) and (max-width: 1024px) {
+  .btncart {
+    padding: 11px 30px;
+  }
 }
-.topcol{
-  width:100%
-}
-.bottomcarousel{
-  padding:80px 50px;
-  height: 100%;
-  gap:34px;
-  width:100%;
+@media (max-width: 768px) {
+  .aboutContainer {
+    overflow: hidden;
+  }
+  .detailContainer {
+    padding: 0px !important;
+    margin: 0px !important;
+    overflow: hidden;
 
-}
-.bottomcarousel>h4{
-  padding:50px 0px;
-}
-.slide{
-  width:100%;
-  height: 100%;
-}
+    width: 100%;
+  }
+  .topdetail {
+    flex-direction: column;
+    width: 100%;
+    margin: 0px !important;
+    padding: 0px 50px;
+  }
+  .topdetail > .topcol1 {
+    width: 100%;
+    height: 100%;
+  }
 
+  .topcol2 {
+    display: none;
+  }
+  .accordiancont {
+    padding: auto 0px;
+    width: 100%;
+  }
+  .accordion {
+    width: 100%;
+  }
+  .topcol {
+    width: 100%;
+  }
+  .bottomcarousel {
+    padding: 80px 50px;
+    height: 100%;
+    gap: 34px;
+    width: 100%;
+  }
+  .bottomcarousel > h4 {
+    padding: 50px 0px;
+  }
+  .textcont > .head {
+    padding-top: 55px;
+  }
+  .slide {
+    width: 100%;
+    height: 100%;
+  }
+  .filterdiv {
+    background: #f3f3f3;
+    width: 100%;
+  }
+  .accordion {
+    background: #f3f3f3;
+  }
+
+  .price {
+    display: none;
+  }
+  .cartcont {
+    display: none;
+  }
+  .mobprice {
+    display: inline-flex;
+    justify-content: space-between;
+    background: #f3f3f3;
+    padding: 20px 0px;
+    flex-wrap: wrap;
+    width: 100%;
+  }
+
+  .mobprice > h6 {
+    text-align: left;
+    margin: 10px 0px;
+  }
+  .dots {
+    margin: 10px;
+  }
+  .pinrow {
+    width: 100%;
+  }
+  .pininput {
+    width: 75%;
+  }
+  .btncart {
+    padding: 22px 75px;
+  }
 }
 </style>
