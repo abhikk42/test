@@ -177,6 +177,7 @@ export default {
 .footerInnerContainer {
   display: grid;
   overflow: hidden;
+  padding: 0px 2%;
 
   grid-template-columns: 70% 25%;
   font-family: "Jost", sans-serif;

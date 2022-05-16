@@ -1,18 +1,46 @@
 <template>
   <div class="aboutContainer" ref="details">
+    <section class="modal" id='myModal'>
+       <div class="close" @click="CloseModal">Close</div>
+      
+        
+        <!-- <img :src="gallery[selectedind].image" class="modal-content" /> -->
+         
+   
+ <VueSlickCarousel
+         
+
+            @afterChange="afterPageChange"
+              cssEase='linear'
+         
+             @click="CloseModal"
+             :style="{width:'100%',height:'100%',boxSizing:'border-box',border:'none'}"
+            ref="fullviewcarousel"
+          >
+        
+            <div v-for="(val,ind) in gallery" :key="ind"  >
+              <img :src="val.image"   class="modal-content"  />
+            </div>
+            </VueSlickCarousel>
+
+   
+ 
+    </section>
+
     <section class="head">
       <Header ref="header" />
     </section>
 
     <section class="detailcontainer">
-      <div class="topdetail">
+      <div class="topdetail" v-if="gallery.length > 0"
+>
         <div class="topcol1">
           <VueSlickCarousel
             v-bind="topsettings"
             @afterChange="afterPageChange"
             ref="gallerycarousel"
           >
-            <div v-for="val in gallery" :key="val.image" class="carouselimg">
+            <div v-for="(val,ind) in gallery" :key="ind" class="carouselimg" @click="handleFullView(ind)">
               <img :src="val.image" width="100%" height="100%" />
             </div>
           </VueSlickCarousel>
@@ -30,22 +58,22 @@
 
         <div class="topcol textcont">
           <h4 class="head">{{ data ? data.name : "" }}</h4>
-          <h6 class="price">Rs.{{ data.selling_price }}</h6>
+          <h6 class="price" >Rs.{{ data.selling_price }} <span :style="{color:'#FFCB05',fontSize:'15px',textTransform:'capitalize'}">Inclusive of all taxes</span></h6>
           <div class="mobprice">
-            <h6>Rs.{{ data.selling_price }}</h6>
+            <h6>Rs.{{ data.selling_price }} <span :style="{color:'#FFCB05',fontSize:'15px'}">Inclusive of all taxes</span></h6>
             <button class="btncart">ADD TO CART</button>
           </div>
           <div class="sizecont">
-            <h6>select size</h6>
-            <div v-for="val in size" :key="val" class="sizebox">{{ val }}</div>
+            <h6 :style="{fontSize:'15px'}">select size</h6>
+            <div v-for="(val,ind) in size" :key="ind" class="sizebox">{{ val }}</div>
           </div>
           <div class="colorcont">
             <h6>COLOURS</h6>
             <div
               v-for="(val, ind) in data.bestseller_products"
-              :key="val.color"
+              :key="ind"
               :class="activecolor == ind ? 'dots dotsactive' : 'dots'"
-              :style="{ background: val.color }"
+              :style="{ background: val.color=='white'?'whitesmoke':val.color }"
               @click="handleActiveColor(ind)"
             ></div>
           </div>
@@ -146,7 +174,7 @@
           class="vueslick"
           v-if="data.similar_products.length > 0"
         >
-          <div class="slide" v-for="val in data.similar_products" :key="val">
+          <div class="slide" v-for="(val,ind) in data.similar_products" :key="ind">
             <img :src="val.image" />
             <h6 class="trend">/ IN TREND /</h6>
             <h6 class="slidedet name">{{ val.name }}</h6>
@@ -182,6 +210,7 @@ export default {
       store: "1",
       gallery: [],
       url_key: "",
+      selectedind:0,
       activecolor: 0,
       sliderPageIndex: 0,
 
@@ -242,6 +271,18 @@ export default {
       this.$refs.gallerycarousel.goTo(ind);
       this.sliderPageIndex = ind;
     },
+    CloseModal(){
+        document.getElementById('myModal').style.display='none';
+
+    },
+    handleFullView(ind)
+    {
+      this.selectedind=ind;
+        document.getElementById('myModal').style.display='block';
+              this.$refs.fullviewcarousel.goTo(ind);
+
+        // mymodal=mymodal=='block'?'none':'block'
+    },
     afterPageChange(page) {
       let calc = (page / this.gallery.length - 1) % 100;
       // document.getElementsByClassName('slick-dots').style[0].backgroundSize=`${calc} +%100`;
@@ -282,18 +323,94 @@ export default {
 <style scoped>
 @import url("https://fonts.googleapis.com/css2?family=Jost:ital,wght@0,100;0,300;0,400;0,500;0,600;0,700;1,200;1,400&family=Montserrat:ital,wght@0,100;0,400;0,500;1,100;1,400;1,500&family=Playfair+Display:ital,wght@0,400;0,500;0,700;1,400&display=swap");
 @import url("https://db.onlinewebfonts.com/c/009a96399d6a238fd8a1d0be514c11ab?family=DK+Plakkaat");
-.detailContainer {
-  display: flex;
+*{
+  min-height: 0;
+min-width: 0;
+}
+.detailcontainer {
+  
+      background: #F8F8F8;
+
   width: 100%;
-  background: #f8f8f8;
+  
   text-transform: uppercase;
   font-family: "Montserrat";
   height: 100%;
 }
 
+#myImg {
+  border-radius: 5px;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+#myImg:hover {opacity: 0.7;}
+
+/* The Modal (background) */
+.modal {
+  display: none; /* Hidden by default */
+  position: fixed; /* Stay in place */
+  z-index: 1; /* Sit on top */
+  padding-top: 20px;
+left: 0;
+  top: 0;
+  width: 100%; /* Full width */
+  height: 100%; /* Full height */
+  overflow: auto; /* Enable scroll if needed */
+  background-color: rgb(0,0,0); /* Fallback color */
+  background-color: rgba(0,0,0,1); /* Black w/ opacity */
+}
+
+/* Modal Content (Image) */
+.modal-content {
+  margin: auto;
+  object-fit: contain;
+  display: block;
+ width: 100%;
+ height: auto;
+  max-width: 700px;
+  max-height: 700px;
+}
+
+
+
+@keyframes zoom {
+  from {transform:scale(0)}
+  to {transform:scale(1)}
+}
+
+/* The Close Button */
+.close {
+  position: absolute;
+  top: 15px;
+  right: 35px;
+  color: #f1f1f1;
+  z-index: 999;
+  font-size: 40px;
+  font-weight: bold;
+  transition: 0.3s;
+}
+
+.close:hover,
+.close:focus {
+  color: #bbb;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+/* 100% Image Width on Smaller Screens */
+@media only screen and (max-width: 700px){
+  .modal-content {
+    width: 100%;
+  }
+}
+
+
 .topdetail {
   display: flex;
   height: 100%;
+
+
   overflow: hidden;
 
   font-family: "Montserrat";
@@ -304,6 +421,7 @@ export default {
   justify-content: center;
 
   height: 100%;
+;
 }
 .topcol2 {
   width: 10%;
@@ -313,7 +431,9 @@ export default {
 .topcol2 .imgcont {
   width: 73px;
   cursor: pointer;
-  margin: 5px 10px;
+  
+  margin: 0px 10px;
+  margin-bottom:5px;
   height: 97px;
 }
 .topcol2 > .imgcont > img {
@@ -322,6 +442,7 @@ export default {
 }
 .imgcont img {
   width: 100%;
+  
   height: 100%;
   margin: 5px 0px;
 }
@@ -352,15 +473,15 @@ export default {
   width: 100%;
 }
 .dots {
-  height: 25px;
-  width: 25px;
+  width: 36px;
+height: 36px;
   border-radius: 50%;
   cursor: pointer;
   margin: 0px 10px;
   display: inline-block;
 }
 .dotsactive {
-  box-shadow: 0 0 0 2px white, 0 0 0 5px #707070;
+  box-shadow: 0 0 0 2px white, 0 0 0 3px #707070;
 }
 
 .textcont h4 {
@@ -398,16 +519,16 @@ img {
 .cartcont {
   display: inline-flex;
   width: 100%;
-  padding-top: 45px;
+  padding-top: 35px;
 
   align-items: center;
   justify-content: flex-start;
 }
 .wishlist {
-  color: #231f20;
+  color: #231F20;
   font-size: 17px;
   text-decoration: underline;
-  font-weight: 500;
+  font-weight: 400;
   margin: 0px 10%;
 }
 .btncart {
@@ -420,6 +541,7 @@ img {
 .sizebox {
   display: flex;
   align-items: center;
+  font-size: 15px;
   cursor: pointer;
   justify-content: center;
   padding: 20px 25px;
@@ -431,7 +553,6 @@ img {
   padding: 50px 0px;
 }
 .accordion {
-  background-color: white;
   color: #231f20;
   font-family: "Montserrat";
   cursor: pointer;
@@ -464,7 +585,7 @@ img {
 
   padding-top: 2px;
   padding-bottom: 2px;
-  border-top: 1px solid #231f20;
+  border-top: 1px solid #231F20;
 }
 .productacc {
   border-bottom: 1px solid #231f20;
@@ -482,6 +603,7 @@ img {
 .pincodecont h6 {
   font-size: 15px;
   margin: 10px 0px;
+  font-weight: 500;
   color: #747474;
   font-family: "Montserrat";
 }
@@ -503,6 +625,7 @@ img {
   text-align: center;
 }
 .filtercontent {
+  font-size: 14px;
   width: 100% !important;
 }
 li {
@@ -529,8 +652,8 @@ li > h4 {
 }
 
 .imgcont > img {
-  width: 70%;
-  height: 50%;
+  width: 40%;
+  height: 40%;
 }
 .imgcont {
   display: inline-flex;
@@ -576,14 +699,19 @@ li > h4 {
 .slide {
   display: flex;
   align-items: center;
-  padding: 0px 10%;
+  padding: 0px 5%;
+  width: 448px;
+height: 568px;
+
   justify-content: center !important;
 
-  width: 100%;
-  height: 100%;
+  /* width: 100%;
+  height: 100%; */
 }
 .slide img {
   width: 100%;
+    mix-blend-mode: multiply;
+
 
   height: 100%;
 }
@@ -591,6 +719,7 @@ li > h4 {
 .vueslick {
   width: 100%;
   color: black;
+  padding-left: 20px;
   height: 100%;
   position: relative;
 }
@@ -631,7 +760,7 @@ li > h4 {
   display: none;
 }
 .bottomcarousel > h4 {
-  padding: 50px 0px;
+  padding: 22px 0px;
 }
 @media (min-width: 769px) and (max-width: 1024px) {
   .btncart {
