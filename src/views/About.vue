@@ -1,5 +1,6 @@
 <template>
   <div class="aboutContainer" ref="details">
+    <!-- Zoom image section -->
     <section class="modal" id='myModal'>
        <div class="close" @click="CloseModal">Close</div>
       
@@ -7,14 +8,14 @@
         <!-- <img :src="gallery[selectedind].image" class="modal-content" /> -->
          
    
- <VueSlickCarousel
+           <VueSlickCarousel
          
 
             @afterChange="afterPageChange"
               cssEase='linear'
          
              @click="CloseModal"
-             :style="{width:'100%',height:'100%',boxSizing:'border-box',border:'none'}"
+             :style="{width:'100%',height:'100%'}"
             ref="fullviewcarousel"
           >
         
@@ -26,11 +27,15 @@
    
  
     </section>
+      <!-- Zoom image section  ends-->
+
 
     <section class="head">
       <Header ref="header" />
     </section>
 
+
+<!----------------------------------- PDP page actual code section ------------------------------------------ -->
     <section class="detailcontainer">
       <div class="topdetail" v-if="gallery.length > 0"
 >
@@ -52,20 +57,20 @@
             class="imgcont"
             @click="changeSlide(ind)"
           >
-            <img :src="val.image" class="topimg" width="100%" height="100%" />
+            <img :src="val.image" :class="activesmallimg==ind?'topimg activesmallimg':'topimg'" width="100%" height="100%" />
           </div>
         </div>
 
         <div class="topcol textcont">
           <h4 class="head">{{ data ? data.name : "" }}</h4>
-          <h6 class="price" >Rs.{{ data.selling_price }} <span :style="{color:'#FFCB05',fontSize:'15px',textTransform:'capitalize'}">Inclusive of all taxes</span></h6>
+          <h6 class="price" :style="{textTransform:'capitalize'}" >Rs.{{ data.selling_price }} <span :style="{color:'#FFCB05',fontSize:'15px',textTransform:'capitalize'}">Inclusive of all taxes</span></h6>
           <div class="mobprice">
-            <h6>Rs.{{ data.selling_price }} <span :style="{color:'#FFCB05',fontSize:'15px'}">Inclusive of all taxes</span></h6>
+            <h6 :style="{textTransform:'capitalize'}">Rs.{{ data.selling_price }} <span :style="{color:'#FFCB05',fontSize:'15px'}">Inclusive of all taxes</span></h6>
             <button class="btncart">ADD TO CART</button>
           </div>
           <div class="sizecont">
             <h6 :style="{fontSize:'15px'}">select size</h6>
-            <div v-for="(val,ind) in size" :key="ind" class="sizebox">{{ val }}</div>
+            <div v-for="(val,ind) in size" :key="ind" :class="activesize==ind?'sizebox activesize':'sizebox'" @click="activesize=ind">{{ val }}</div>
           </div>
           <div class="colorcont">
             <h6>COLOURS</h6>
@@ -138,7 +143,7 @@
             </div>
           </div>
 
-          <!--  -->
+          <!-- pincode information -->
           <div class="pincodecont">
             <h6>CHECK PINCODE FOR DELIVERY</h6>
             <div class="pinrow">
@@ -148,7 +153,7 @@
           </div>
         </div>
       </div>
-
+     <!-- -------------Mid  row  Section --------------- -->
       <div class="midsection">
         <div class="imgcont">
           <img src="@/assets/fast.svg" alt="" />
@@ -164,7 +169,7 @@
         </div>
       </div>
 
-      <!-- Bottom Detail Section -->
+      <!---------------- Bottom Detail Section -------------->
 
       <div class="bottomcarousel">
         <h4>BEING HUMAN EXCLUSIVE</h4>
@@ -174,7 +179,7 @@
           class="vueslick"
           v-if="data.similar_products.length > 0"
         >
-          <div class="slide" v-for="(val,ind) in data.similar_products" :key="ind">
+          <div class="slide" v-for="(val,ind) in data.similar_products" :key="ind" @click="handleSimilarProducts(val)">
             <img :src="val.image" />
             <h6 class="trend">/ IN TREND /</h6>
             <h6 class="slidedet name">{{ val.name }}</h6>
@@ -183,6 +188,7 @@
         </VueSlickCarousel>
       </div>
     </section>
+<!----------------------------------- PDP page actual code section  ends------------------------------------------ -->
 
     <section>
       <Footer />
@@ -211,6 +217,8 @@ export default {
       gallery: [],
       url_key: "",
       selectedind:0,
+      activesmallimg:0,
+      activesize:0,
       activecolor: 0,
       sliderPageIndex: 0,
 
@@ -270,6 +278,18 @@ export default {
     changeSlide(ind) {
       this.$refs.gallerycarousel.goTo(ind);
       this.sliderPageIndex = ind;
+      this.activesmallimg=ind;
+    },
+    handleSimilarProducts(val){
+      this.$router.push({
+       path: '/about',
+        query: {
+        url_key: val.url_key
+        }
+    }).catch(()=>{});
+  this.$router.go()
+
+
     },
     CloseModal(){
         document.getElementById('myModal').style.display='none';
@@ -289,6 +309,7 @@ export default {
       //     document.getElementsByClassName('slick-dots').style[0].attr=`aria-valuenow=${calc} );`;
 
       this.sliderPageIndex = page;
+      this.activesmallimg=page;
     },
     async getdata() {
       let resp = await axios.get(this.api, {
@@ -337,16 +358,8 @@ min-width: 0;
   font-family: "Montserrat";
   height: 100%;
 }
+/* Zoom Image css */
 
-#myImg {
-  border-radius: 5px;
-  cursor: pointer;
-  transition: 0.3s;
-}
-
-#myImg:hover {opacity: 0.7;}
-
-/* The Modal (background) */
 .modal {
   display: none; /* Hidden by default */
   position: fixed; /* Stay in place */
@@ -354,6 +367,7 @@ min-width: 0;
   padding-top: 20px;
 left: 0;
   top: 0;
+  border:none;
   width: 100%; /* Full width */
   height: 100%; /* Full height */
   overflow: auto; /* Enable scroll if needed */
@@ -366,6 +380,7 @@ left: 0;
   margin: auto;
   object-fit: contain;
   display: block;
+  border:none;
  width: 100%;
  height: auto;
   max-width: 700px;
@@ -398,14 +413,9 @@ left: 0;
   cursor: pointer;
 }
 
-/* 100% Image Width on Smaller Screens */
-@media only screen and (max-width: 700px){
-  .modal-content {
-    width: 100%;
-  }
-}
+/* Zoom Image css ends */
 
-
+/*---------------------------PDP page css-------------------*/
 .topdetail {
   display: flex;
   height: 100%;
@@ -483,6 +493,9 @@ height: 36px;
 .dotsactive {
   box-shadow: 0 0 0 2px white, 0 0 0 3px #707070;
 }
+.activesmallimg{
+  border:1px solid black;
+}
 
 .textcont h4 {
   font-size: 25px;
@@ -536,6 +549,7 @@ img {
   font-family: "Montserrat";
   font-size: 17px;
   background: #231f20;
+  cursor: pointer;
   color: #ffcb05;
 }
 .sizebox {
@@ -626,6 +640,8 @@ img {
 }
 .filtercontent {
   font-size: 14px;
+  max-height: 300px;
+  overflow-y:scroll;
   width: 100% !important;
 }
 li {
@@ -701,6 +717,7 @@ li > h4 {
   align-items: center;
   padding: 0px 5%;
   width: 448px;
+  cursor: pointer;
 height: 568px;
 
   justify-content: center !important;
@@ -739,6 +756,11 @@ height: 568px;
   padding-bottom: 5px;
 }
 
+.activesize{
+  background:green;
+  color:white;
+  
+  }
 .slidedet .price {
   font-size: 17px;
 }
@@ -760,9 +782,9 @@ height: 568px;
   display: none;
 }
 .bottomcarousel > h4 {
-  padding: 22px 0px;
+  padding: 22px 50px;
 }
-@media (min-width: 769px) and (max-width: 1024px) {
+@media (min-width: 769px) and (max-width: 1300px) {
   .btncart {
     padding: 11px 30px;
   }
@@ -818,6 +840,7 @@ height: 568px;
     width: 100%;
     height: 100%;
   }
+  
   .filterdiv {
     background: #f3f3f3;
     width: 100%;
@@ -841,6 +864,7 @@ height: 568px;
     width: 100%;
   }
 
+
   .mobprice > h6 {
     text-align: left;
     margin: 10px 0px;
@@ -855,7 +879,13 @@ height: 568px;
     width: 75%;
   }
   .btncart {
-    padding: 22px 75px;
+    padding: 22px 50px;
+  }
+}
+  /* 100% Image Width on Smaller Screens */
+@media only screen and (max-width: 700px){
+  .modal-content {
+    width: 100%;
   }
 }
 </style>
