@@ -408,8 +408,8 @@ export default {
     font-size: 10px;
   }
 }
-@media (max-width: 300px) {
-  .icons > .selicon {
+@media (max-width: 350px) {
+  .selicon {
     font-size: 4px;
     margin: 0px 4px;
   }

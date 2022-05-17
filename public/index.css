@@ -1,10 +1,11 @@
 .slick-prev::before,
 .slick-next::before {
-  background: #231f20 !important;
+  background: black !important;
   display: flex;
   text-align: center;
   justify-content: center;
-  padding: 24px !important;
+  opacity: 1 !important;
+  padding: 20px 29px !important;
   align-items: center;
   z-index: 100;
 }
@@ -12,6 +13,16 @@
   margin-right: 20px;
 } */
 
+.slick-prev::before{
+  content: url("./icon-left.svg") !important;
+  margin-left: -20px !important;
+  background-size: cover;
+
+}
+.slick-next::before{
+  content: url("./icon-right.svg") !important;
+
+}
 .slick-arrow::before {
   margin: 0px auto;
   font-size: 25px !important;
@@ -37,4 +48,8 @@
   .slick-dots {
     display: none !important;
   }
+  .slick-prev::before,
+.slick-next::before{
+  display: none !important;
+}
 }

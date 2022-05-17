@@ -2,7 +2,7 @@
   <div class="aboutContainer" ref="details">
     <!-- Zoom image section -->
     <section class="modal" id='myModal'>
-       <div class="close" @click="CloseModal">Close</div>
+       <div class="close" @click="CloseModal">   <font-awesome-icon icon="fa-x" class="cross" /></div>
       
         
         <!-- <img :src="gallery[selectedind].image" class="modal-content" /> -->
@@ -65,7 +65,7 @@
           <h4 class="head">{{ data ? data.name : "" }}</h4>
           <h6 class="price" :style="{textTransform:'capitalize'}" >Rs.{{ data.selling_price }} <span :style="{color:'#FFCB05',fontSize:'15px',textTransform:'capitalize'}">Inclusive of all taxes</span></h6>
           <div class="mobprice">
-            <h6 :style="{textTransform:'capitalize'}">Rs.{{ data.selling_price }} <span :style="{color:'#FFCB05',fontSize:'15px'}">Inclusive of all taxes</span></h6>
+            <h6 :style="{textTransform:'capitalize'}">Rs.{{ data.selling_price }} <span :style="{color:'#FFCB05',fontSize:'15px'}" class="pricespan">Inclusive of all taxes</span></h6>
             <button class="btncart">ADD TO CART</button>
           </div>
           <div class="sizecont">
@@ -136,7 +136,7 @@
                 <ul>
                   <li v-for="val in data.visible_attributes" :key="val.code">
                     <h4>{{ val.code }}</h4>
-                    {{ val.value }}
+                    {{ val.value.slice(0,30) }}
                   </li>
                 </ul>
               </div>
@@ -147,9 +147,12 @@
           <div class="pincodecont">
             <h6>CHECK PINCODE FOR DELIVERY</h6>
             <div class="pinrow">
-              <input type="text" placeholder="Enter pincode" class="pininput" />
-              <button class="pinbtn">check</button>
+              <input type="text" placeholder="Enter pincode" v-model="pincode" inputmode="numeric" class="pininput" id='pincode' @input="handlePinCode" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');" maxlength='6'  value=''  />
+              <button class="pinbtn" @click="handlePinCode">check</button>
             </div>
+                          <div id="error">{{message}}</div>
+
+            
           </div>
         </div>
       </div>
@@ -214,13 +217,16 @@ export default {
       api: "https://pim.wforwoman.com/pim/pimresponse.php/",
       service: "product",
       store: "1",
+      pincode:"",
       gallery: [],
       url_key: "",
+      message:'',
       selectedind:0,
       activesmallimg:0,
       activesize:0,
       activecolor: 0,
       sliderPageIndex: 0,
+      pat1:/^[0-9]*$/,
 
       accorddata: [{ open: "false" }, { open: "false" }, { open: "false" }],
       data: "",
@@ -246,7 +252,7 @@ export default {
         autoplaySpeed: 4000,
         arrows: false,
 
-        vertical: true,
+        vertical: false,
         slidesToShow: 1,
         slidesToScroll: 1,
       },
@@ -295,6 +301,30 @@ export default {
         document.getElementById('myModal').style.display='none';
 
     },
+   handlePinCode()
+   {
+
+     if(this.pat1.test(this.pincode) && this.pincode.length==6 ){ 
+            document.getElementById('error').style.display='block';
+           document.getElementById('error').style.color='green';
+           this.message='Pincode is valid'
+
+
+
+     }else if(this.pat1.test(this.pincode) && this.pincode.length<6)
+     {
+            document.getElementById('error').style.display='none';
+     }
+     else
+     {
+       document.getElementById('error').style.display='block';
+              document.getElementById('error').style.color='red';
+              this.message='Please enter the valid pincode of 6 digit number'
+
+     }
+
+
+   },
     handleFullView(ind)
     {
       this.selectedind=ind;
@@ -488,6 +518,7 @@ height: 36px;
   border-radius: 50%;
   cursor: pointer;
   margin: 0px 10px;
+  box-shadow: 0 3px 10px rgb(0 0 0 / 0.2);
   display: inline-block;
 }
 .dotsactive {
@@ -502,6 +533,7 @@ height: 36px;
   font-weight: 400;
   text-transform: uppercase;
 }
+
 .textcont h6 {
   font-size: 22px;
   margin: 10px auto;
@@ -537,10 +569,15 @@ img {
   align-items: center;
   justify-content: flex-start;
 }
+.head{
+            letter-spacing: 2px;
+
+}
 .wishlist {
   color: #231F20;
   font-size: 17px;
   text-decoration: underline;
+  text-transform: capitalize;
   font-weight: 400;
   margin: 0px 10%;
 }
@@ -548,6 +585,8 @@ img {
   padding: 22px 130px;
   font-family: "Montserrat";
   font-size: 17px;
+        letter-spacing: 2px;
+
   background: #231f20;
   cursor: pointer;
   color: #ffcb05;
@@ -571,14 +610,14 @@ img {
   font-family: "Montserrat";
   cursor: pointer;
   text-transform: uppercase;
-  padding: 15px 10px 15px 10px;
+  padding: 15px 15px 15px 15px;
   width: 100%;
   border: none;
   text-align: left;
 
-  font-weight: 500;
+  font-weight: 400;
   outline: none;
-  font-size: 15px;
+  font-size: 14px;
   transition: 0.4s;
 }
 .accordion > .icon {
@@ -596,7 +635,7 @@ img {
   margin: 0px 0px;
   color: #231f20;
   font-weight: 400;
-
+line-height: 1.6;
   padding-top: 2px;
   padding-bottom: 2px;
   border-top: 1px solid #231F20;
@@ -607,12 +646,13 @@ img {
 /*--------pincode-----------*/
 .pincodecont {
   display: inline-flex;
-  width: 90%;
+  width: 100%;
   flex-wrap: wrap;
 }
 .pinrow {
   display: flex;
   width: 70%;
+  flex-wrap: wrap;
 }
 .pincodecont h6 {
   font-size: 15px;
@@ -620,6 +660,14 @@ img {
   font-weight: 500;
   color: #747474;
   font-family: "Montserrat";
+}
+#error{
+  font-size: 14px;
+  color:red;
+  display: none;
+  text-transform: capitalize;
+  padding:10px 5px;
+  width:100%;
 }
 .pininput {
   width: 70%;
@@ -633,6 +681,9 @@ img {
   color: #ffcb05;
   background: #231f20;
   padding: 20px 35px;
+    letter-spacing: 2px;
+    cursor: pointer;
+
   font-size: 17px;
   outline: none;
   text-transform: uppercase;
@@ -641,17 +692,19 @@ img {
 .filtercontent {
   font-size: 14px;
   max-height: 300px;
-  overflow-y:scroll;
+  padding:10px 10px;
+  overflow:auto;
   width: 100% !important;
 }
-li {
+.filtercontent li {
   list-style-type: none;
   display: inline-flex;
   width: 100% !important;
   font-size: 12px;
+  margin:5px 0px;
   justify-content: space-between;
 }
-li > h4 {
+.filtercontent li > h4 {
   font-size: 14px !important;
 }
 
@@ -659,21 +712,27 @@ li > h4 {
 .midsection {
   display: flex;
   justify-content: space-around;
-  border-top: 1px solid #f3f3f3;
   overflow: hidden;
+  
+width:94%;
+  border-top: 2px solid #D8D8D8;
+    border-bottom: 2px solid #D8D8D8;
+    margin:0px 3%;
 
-  border-bottom: 1px solid #f3f3f3;
 
-  padding: 10px 40px;
+  padding: 5px 40px;
 }
+/* .sizecont>h6,.sizecont>div{
+  margin:0px 0;
+} */
 
 .imgcont > img {
   width: 40%;
   height: 40%;
+    margin:0px !important;
 }
 .imgcont {
   display: inline-flex;
-  width: 10%;
   text-transform: capitalize;
   height: 100px;
   flex-wrap: wrap;
@@ -686,7 +745,9 @@ li > h4 {
 }
 .imgcont > h6 {
   font-size: 15px;
+  margin-top:-15px;
   color: #231f20;
+
   font-weight: 500;
 }
 
@@ -745,7 +806,8 @@ height: 568px;
 }
 .slidedet {
   font-size: 16px;
-  font-family: "Monsterrat";
+  font-family: "Monsterrat" !important;
+  text-transform: capitalize;
 
   font-weight: 400;
   margin: 0px;
@@ -763,6 +825,7 @@ height: 568px;
   }
 .slidedet .price {
   font-size: 17px;
+  color:#202020;
 }
 .trend {
   color: #747474;
@@ -788,6 +851,9 @@ height: 568px;
   .btncart {
     padding: 11px 30px;
   }
+  .pinrow{
+    flex-wrap: nowrap;
+  }
 }
 @media (max-width: 768px) {
   .aboutContainer {
@@ -800,19 +866,32 @@ height: 568px;
 
     width: 100%;
   }
+  .midsection{
+    display: none;
+  }
   .topdetail {
     flex-direction: column;
     width: 100%;
     margin: 0px !important;
-    padding: 0px 50px;
+    padding: 0px 0px;
   }
-  .topdetail > .topcol1 {
+  .bottomcarousel h4 {
+    font-size: 30px;
+    line-height: 30px;
+  }
+  .topdetail .topcol1 {
     width: 100%;
+    padding:0px 15px !important;
     height: 100%;
   }
-
+  
+   
   .topcol2 {
     display: none;
+  }
+  .textcont{
+        padding:0px !important
+
   }
   .accordiancont {
     padding: auto 0px;
@@ -825,16 +904,19 @@ height: 568px;
     width: 100%;
   }
   .bottomcarousel {
-    padding: 80px 50px;
+    padding: 40px 15px;
     height: 100%;
     gap: 34px;
     width: 100%;
   }
   .bottomcarousel > h4 {
-    padding: 50px 0px;
+    padding: 20px 0px;
   }
   .textcont > .head {
-    padding-top: 55px;
+    padding-top: 37px;
+    padding-left: 15px;
+    padding-right: 15px;
+
   }
   .slide {
     width: 100%;
@@ -859,10 +941,25 @@ height: 568px;
     display: inline-flex;
     justify-content: space-between;
     background: #f3f3f3;
-    padding: 20px 0px;
+    position: fixed;
+    align-items: center;
+    bottom:0;
+    left:0;
+    right: 0;
+    z-index: 20;;
+    padding: 10px 10px;
     flex-wrap: wrap;
     width: 100%;
   }
+
+.sizecont,.colorcont,.pincodecont{
+  padding:0px 15px;
+}
+.bottomcarousel{
+  padding:40px auto;
+  padding-left: 5px;
+  padding-right: 15px;
+}
 
 
   .mobprice > h6 {
@@ -874,18 +971,36 @@ height: 568px;
   }
   .pinrow {
     width: 100%;
+    padding: 0px;
+    flex-wrap: nowrap;
   }
   .pininput {
-    width: 75%;
+    width: 80%
+
   }
+  
   .btncart {
     padding: 22px 50px;
+    flex-basis: auto;
+
+    
   }
+  .pricespan{
+    display: none;
+  }
+  
+}
+@media(max-width:480px)
+{
+  .btncart {
+     padding:11px 25px;
+   }
 }
   /* 100% Image Width on Smaller Screens */
 @media only screen and (max-width: 700px){
   .modal-content {
     width: 100%;
   }
+   
 }
 </style>
